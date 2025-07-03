@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, Depends
-from app.models.user import UserIn, UserOut, LoginUser
+from app.models.user import UserIn, LoginUser
 from app.services.auth_service import register_user, authenticate_user
 from app.utils.security import create_access_token
 
@@ -20,7 +20,8 @@ def login(user: LoginUser):
     if not user_db:
         raise HTTPException(status_code=400, detail="Invalid credentials")
     token = create_access_token(data={"sub": user_db["Email"]})
-    return {"access_token": token, "token_type": "bearer", "user": UserOut(**user_db)}
+    user_db["_id"] = str(user_db["_id"])
+    return {"access_token": token, "token_type": "bearer", "user": user_db}
 
 @router.post("/logout")
 def logout():

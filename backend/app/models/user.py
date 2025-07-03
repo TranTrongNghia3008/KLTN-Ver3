@@ -10,11 +10,3 @@ class UserIn(BaseModel):
 class LoginUser(BaseModel):
     Email: EmailStr
     Password: str
-
-class UserOut(BaseModel):
-    Name: str
-    Email: EmailStr
-    Avatar: Optional[str] = None
-
-class UserInDB(UserOut):
-    hashed_password: str

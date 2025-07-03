@@ -8,3 +8,7 @@ class ConversationSession(BaseModel):
     History: List[str]
     createdAt: Optional[datetime] = None
     updatedAt: Optional[datetime] = None
+    
+    
+class RenameConversationRequest(BaseModel):
+    title: str

@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Request, HTTPException
-from app.models.conversation_session import ConversationSession
+from app.models.conversation_session import *
 from app.models.location import LocationModel
 from app.database.connect import db
 from bson import ObjectId
@@ -16,7 +16,10 @@ async def show(user_id: str):
     except Exception:
         return {"error": "Invalid user_id format"}
 
-    sessions = db.conversationsessions.find({"UserID": object_user_id}, {"Title": 1})
+    sessions = db.conversationsessions.find(
+        {"UserID": object_user_id},
+        {"Title": 1, "updatedAt": 1}
+    ).sort("updatedAt", -1)
     result = []
     for s in sessions:
         result.append({
@@ -88,8 +91,6 @@ async def update_locations(id: str, locations: List[LocationModel]):
 async def load_locations(id: str):
     
     results = list(db.locations.find({"SessionID": ObjectId(id)}))
-    if not results:
-        raise HTTPException(status_code=404, detail="No locations found")
     mapped = []
     for loc in results:
         mapped.append(LocationModel(
@@ -108,9 +109,9 @@ async def load_locations(id: str):
 
 # PUT /q-and-a/conversations/{id}/renameConversation
 @router.put("/conversations/{id}/renameConversation")
-async def rename_conversation(id: str, title: str):
+async def rename_conversation(id: str, req: RenameConversationRequest):
     result = db.conversationsessions.update_one(
-        {"_id": ObjectId(id)}, {"$set": {"Title": title, "updatedAt": datetime.utcnow()}}
+        {"_id": ObjectId(id)}, {"$set": {"Title": req.title, "updatedAt": datetime.utcnow()}}
     )
     if result.matched_count == 0:
         raise HTTPException(status_code=404, detail="Conversation not found")

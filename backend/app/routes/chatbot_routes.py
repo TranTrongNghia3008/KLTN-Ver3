@@ -11,7 +11,7 @@ from app.models.schemas import *
 from bson import ObjectId
 from datetime import datetime
 
-router = APIRouter()
+router = APIRouter(prefix="/q-and-a", tags=["Chatbot"])
 
 @router.post("/getLocationInformations")
 async def get_location_informations(request: LocationRequest):
@@ -147,11 +147,11 @@ async def get_response(request: ResponseRequest):
     {
         "$push": {
             "History": f"""System: OldMessage:{old_message}
-HighlightNotCorrect: {highlight_not_correct}
-LinkNotCorrect: {link_not_correct}
-HighlightCorrect: {highlight_correct}
-LinkCorrect: {link_correct}
-NewMessage: {new_message}"""
+            HighlightNotCorrect: {highlight_not_correct}
+            LinkNotCorrect: {link_not_correct}
+            HighlightCorrect: {highlight_correct}
+            LinkCorrect: {link_correct}
+            NewMessage: {new_message}"""
         }
     }
 )

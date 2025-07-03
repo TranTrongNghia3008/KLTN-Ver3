@@ -23,48 +23,57 @@ def analyze_prompt(text: str):
     return query
 
 def search_relevant_links(query: SearchQuery, topK: int, conversationsessionsID: str):
-    driver = get_chrome_driver()
-    
-    site = query.site.strip().lower() if query.site else ''
-    if site and site not in ['n/a', 'none']:
-        search_url = f'https://www.bing.com/search?q=site:{site} {query.query}'
-    else:
-        search_url = f'https://www.bing.com/search?q={query.query}'
-    print(search_url)
-    driver.get(search_url)
-
-    # print(driver.page_source)
-    time.sleep(10)
-
-    articles = driver.find_elements(By.CSS_SELECTOR, "#b_results li.b_algo")
+    retry_count = 1
+    max_retries = 3
     link_articles = []
-    
-    if not articles:
-        time.sleep(5)
-        articles = driver.find_elements(By.CSS_SELECTOR, "#b_results li.b_algo")
-
     existing_links = set()
+
     existing_documents = db.articlefiles.find({"SessionID": conversationsessionsID})
     for doc in existing_documents:
         existing_links.add(doc["Link"])
 
-    for article in articles[:min(topK, len(articles))]:
-        title_element = article.find_element(By.TAG_NAME, "h2").find_element(By.TAG_NAME, "a")
-        title = title_element.text
-        link = title_element.get_attribute('href')
+    driver = None
+    try:
+        while retry_count <= max_retries:
+            driver = get_chrome_driver()
 
-        if link not in existing_links:
-            # link_articles.append({"title": title, "link": link})
-            link_article = LinkArticle(
-                title=title,
-                link=link,
-            )
-            link_articles.append(link_article)
-    print(link_articles)
+            site = query.site.strip().lower() if query.site else ''
+            if site and site not in ['n/a', 'none']:
+                search_url = f'https://www.google.com/search?q=site:{site} {query.query}'
+            else:
+                search_url = f'https://www.google.com/search?q={query.query}'
+            print(f"Searching: {search_url}")
 
-    driver.quit()
+            driver.get(search_url)
+            time.sleep(10 * retry_count) 
+
+            articles = driver.find_elements(By.CLASS_NAME, "b_algo")
+            if articles:
+                for article in articles[:min(topK, len(articles))]:
+                    try:
+                        title_element = article.find_element(By.TAG_NAME, "h2").find_element(By.TAG_NAME, "a")
+                        title = title_element.text
+                        link = title_element.get_attribute('href')
+
+                        if link not in existing_links:
+                            link_article = LinkArticle(title=title, link=link)
+                            link_articles.append(link_article)
+                    except Exception as inner_err:
+                        print(f"Error parsing an article: {inner_err}")
+                break  # success
+            else:
+                print("No articles found, retrying...")
+                retry_count += 1
+                driver.quit()
+                driver = None  # to avoid quitting again in finally
+    except Exception as e:
+        print(f"[ERROR] Bing search failed: {e}")
+    finally:
+        if driver:
+            driver.quit()
 
     return link_articles
+
 
 def convert_to_pdf(link_articles: List[LinkArticle], conversationsessionsID: str):
     file_paths = []

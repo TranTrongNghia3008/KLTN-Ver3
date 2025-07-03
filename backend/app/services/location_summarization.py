@@ -102,10 +102,19 @@ def process_news(args):
     news.local = list_location
     return news
 
+def safe_process_news(args):
+    try:
+        return process_news(args)
+    except Exception as e:
+        news, _, _ = args
+        print(f"[ERROR] Failed to process '{news.title}': {e}")
+        return None
+
 def parallel_processing(link_articles, files_path, conversationsessionsID):
     args_list = [(link_articles[i], files_path[i], conversationsessionsID) for i in range(len(link_articles))]
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        results = list(executor.map(process_news, args_list))
+        results = list(executor.map(safe_process_news, args_list))
     
+    results = [r for r in results if r is not None]
     return results
