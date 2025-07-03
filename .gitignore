@@ -130,3 +130,7 @@ dist
 .pnp.*
 
 myenv/
+
+/backend/app/genconvit/weight/
+/backend/app/genconvit/sample_prediction_data/
+/backend/app/genconvit/sample_train_data/

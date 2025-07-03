@@ -4,6 +4,7 @@ from app.routes import auth_routes
 from app.routes.chatbot_routes import router as chatbot_router
 from app.routes.session_routes import router as session_router
 from app.routes.conversations import router as conversation_router
+from app.routes.detect import router as detect
 
 app = FastAPI()
 
@@ -20,3 +21,4 @@ app.include_router(auth_routes.router, prefix="/auth")
 app.include_router(chatbot_router)
 app.include_router(session_router)
 app.include_router(conversation_router)
+app.include_router(detect, prefix="/deepfake")
