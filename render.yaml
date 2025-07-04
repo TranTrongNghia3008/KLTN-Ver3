@@ -4,9 +4,15 @@ services:
     env: python
     plan: free
     region: singapore
-    buildCommand: "pip install -r backend/requirements.txt"
-    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port 10000"
-    workingDir: backend  # 👈 Quan trọng: vào đúng thư mục chứa requirements.txt
+    buildCommand: |
+      pip install -r requirements.txt
+      echo "⏬ Downloading GenConViT models..."
+      mkdir -p app/genconvit/weight
+      wget -O app/genconvit/weight/genconvit_ed_inference.pth https://huggingface.co/Deressa/GenConViT/resolve/main/genconvit_ed_inference.pth
+      wget -O app/genconvit/weight/genconvit_vae_inference.pth https://huggingface.co/Deressa/GenConViT/resolve/main/genconvit_vae_inference.pth
+      echo "✅ Model download complete."
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port 10000
+    workingDir: backend
     envVars:
       - key: PYTHON_VERSION
         value: 3.11
