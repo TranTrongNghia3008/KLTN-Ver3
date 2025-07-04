@@ -134,3 +134,11 @@ myenv/
 /backend/app/genconvit/weight/
 /backend/app/genconvit/sample_prediction_data/
 /backend/app/genconvit/sample_train_data/
+
+/research/data/
+/research/notebooks/videos/
+/research/notebooks/audios/
+/research/notebooks/statement_clips/
+/research/notebooks/frames/
+/research/notebooks/statement_frames/
+/research/notebooks/test_pipeline.ipynb
