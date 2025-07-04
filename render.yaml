@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: fastapi-backend
+    env: python
+    plan: free
+    region: singapore
+    buildCommand: "pip install -r backend/requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port 10000"
+    workingDir: backend  # 👈 Quan trọng: vào đúng thư mục chứa requirements.txt
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11

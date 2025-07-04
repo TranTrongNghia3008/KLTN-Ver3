@@ -17,6 +17,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/")
+def read_root():
+    return {"message": "Hello from Render!"}
+
 app.include_router(auth_routes.router, prefix="/auth")
 app.include_router(chatbot_router)
 app.include_router(session_router)
