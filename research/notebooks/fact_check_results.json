@@ -1,6 +1,102 @@
 [
     {
-        "video_path": "../data/dfw_youtube_release\\940.mp4",
-        "result": true
+        "video_path": "../data/dfw_youtube_release\\0.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\1.mp4",
+        "deepfake_label": "REAL",
+        "label": true
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\2.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\3.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\4.mp4",
+        "deepfake_label": "REAL",
+        "label": true
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\5.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\6.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\7.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\8.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\9.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\10.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\11.mp4",
+        "deepfake_label": "REAL",
+        "label": true
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\12.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\13.mp4",
+        "deepfake_label": "REAL",
+        "label": true
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\14.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\15.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\16.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\17.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\18.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
+    },
+    {
+        "video_path": "../data/dfw_youtube_release\\19.mp4",
+        "deepfake_label": "FAKE",
+        "label": false
     }
 ]

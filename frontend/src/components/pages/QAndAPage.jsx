@@ -7,6 +7,8 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { FiMenu, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import EditedHistory from '../EditedHistory';
 import { fetchConversations } from '../services/qnaService';
+import Cheapfake from './Cheapfake';
+import Deepfake from './Deepfake';
 
 export default function QAndAPage() {
   const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -163,10 +165,11 @@ export default function QAndAPage() {
           </div>
         )}
 
-        {currentTab !== 'Q&A' && (
-          <div className="flex items-center justify-center h-full text-gray-400 text-xl">
-            Chức năng "{currentTab}" đang được phát triển...
-          </div>
+        {currentTab === 'Cheapfake' && (
+          <Cheapfake />
+        )}
+        {currentTab === 'Deepfake' && (
+          <Deepfake />
         )}
       </div>
     </div>
