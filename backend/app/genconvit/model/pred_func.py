@@ -128,7 +128,11 @@ def store_result(
     result["video"]["name"].append(filename)
     result["video"]["pred"].append(y_val)
     result["video"]["klass"].append(klass.lower())
-    result["video"]["pred_label"].append(real_or_fake(y))
+    # result["video"]["pred_label"].append(real_or_fake(y))
+    if y_val >= 0.5:
+        result["video"]["pred_label"].append("FAKE")
+    else:
+        result["video"]["pred_label"].append("REAL")
 
     if correct_label is not None:
         result["video"]["correct_label"].append(correct_label)
