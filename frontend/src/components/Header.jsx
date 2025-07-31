@@ -4,7 +4,7 @@ import userDefaultImage from "/images/default-user-image.png";
 import { FiUser, FiLogOut } from 'react-icons/fi'
 
 export default function Header({ currentTab, setCurrentTab, user, onLogout }) {
-  const tabs = ['Q&A', 'Cheapfake', 'Deepfake', 'Cài đặt'];
+  const tabs = ['Q&A', 'Cheapfake', 'Deepfake', 'Settings'];
   const [showDropdown, setShowDropdown] = useState(false);
 
   return (

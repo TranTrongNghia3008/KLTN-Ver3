@@ -43,9 +43,9 @@ export default function Cheapfake() {
       // Kết quả giả lập
       const isFake = Math.random() > 0.5;
       const links = [
-        "https://example.com/article-1",
-        "https://example.com/article-2",
-        "https://example.com/article-3",
+        "https://www.snopes.com/fact-check/trump-rally-arrested-tweet/",
+        "https://www.reuters.com/article/world/fact-check-trump-did-not-tweet-about-arresting-ticketholders-who-failed-to-atte-idUSKBN23U2JY/",
+        "https://www.teenvogue.com/story/tiktok-teens-fake-tickets-trump-tulsa-rally",
       ];
       setResult(isFake ? "Not out of context" : "Out of context");
       setEvidenceLinks(links);
