@@ -39,9 +39,9 @@ def search_relevant_links(query: SearchQuery, topK: int, conversationsessionsID:
 
             site = query.site.strip().lower() if query.site else ''
             if site and site not in ['n/a', 'none']:
-                search_url = f'https://www.google.com/search?q=site:{site} {query.query}'
+                search_url = f'https://www.bing.com/search?q=site:{site} {query.query}'
             else:
-                search_url = f'https://www.google.com/search?q={query.query}'
+                search_url = f'https://www.bing.com/search?q={query.query}'
             print(f"Searching: {search_url}")
 
             driver.get(search_url)

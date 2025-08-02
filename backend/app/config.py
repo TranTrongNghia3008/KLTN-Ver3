@@ -8,6 +8,13 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+import concurrent.futures
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+from selenium.common.exceptions import (
+    TimeoutException, NoSuchElementException, ElementClickInterceptedException
+)
 import re
 
 # For extracting site and keyword data
@@ -50,6 +57,11 @@ import concurrent.futures
 
 from dotenv import load_dotenv
 
+from google import genai
+from google.genai import types
+import os
+from PIL import Image
+
 # Load file .env
 load_dotenv()
 
@@ -66,3 +78,4 @@ STORAGE_PATH = "./storage/pdf_files"
 
 MINIMUM_K = 1
 
+client_gemini = genai.Client(api_key="AIzaSyATfpBIyIKcajRMxGy9-1tbNP5xwgLua3U")
