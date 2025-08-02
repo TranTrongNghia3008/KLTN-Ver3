@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { FiUpload, FiX, FiSearch } from "react-icons/fi";
+import { checkCheapfake } from "../services/cheapfakeService";
 
 export default function Cheapfake() {
   const [image, setImage] = useState(null);
   const [caption, setCaption] = useState("");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
-
   const [evidenceLinks, setEvidenceLinks] = useState([]);
 
   const handleImageUpload = (e) => {
@@ -17,6 +17,7 @@ export default function Cheapfake() {
         url: URL.createObjectURL(file),
       });
       setResult(null);
+      setEvidenceLinks([]);
     }
   };
 
@@ -29,28 +30,27 @@ export default function Cheapfake() {
         url: URL.createObjectURL(file),
       });
       setResult(null);
+      setEvidenceLinks([]);
     }
   };
 
-  const handleCheck = () => {
+  const handleCheck = async () => {
     if (!image || !caption.trim()) return;
 
     setLoading(true);
     setResult(null);
+    setEvidenceLinks([]);
 
-    // Giả lập gọi API
-    setTimeout(() => {
-      // Kết quả giả lập
-      const isFake = Math.random() > 0.5;
-      const links = [
-        "https://www.snopes.com/fact-check/trump-rally-arrested-tweet/",
-        "https://www.reuters.com/article/world/fact-check-trump-did-not-tweet-about-arresting-ticketholders-who-failed-to-atte-idUSKBN23U2JY/",
-        "https://www.teenvogue.com/story/tiktok-teens-fake-tickets-trump-tulsa-rally",
-      ];
-      setResult(isFake ? "Not out of context" : "Out of context");
-      setEvidenceLinks(links);
+    try {
+      const res = await checkCheapfake(image.file, caption);
+      setResult(res.label === "1" ? "Out of context" : "Not out of context");
+      setEvidenceLinks(res.url_articles); // mảng gồm { title, link }
+    } catch (err) {
+      console.error("Error during cheapfake check:", err);
+      alert("An error occurred while verifying the image.");
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -83,7 +83,11 @@ export default function Cheapfake() {
             <div className="relative w-full">
               <img src={image.url} alt="Uploaded" className="rounded-lg w-full object-contain max-h-96" />
               <button
-                onClick={() => setImage(null)}
+                onClick={() => {
+                  setImage(null);
+                  setResult(null);
+                  setEvidenceLinks([]);
+                }}
                 className="absolute top-2 right-2 bg-white rounded-full p-1 shadow hover:bg-gray-100"
               >
                 <FiX size={20} />
@@ -126,11 +130,11 @@ export default function Cheapfake() {
           {result && evidenceLinks.length > 0 && (
             <div className="mt-4">
               <p className="font-medium text-gray-700 mb-2">Related Sources:</p>
-              <ul className="list-disc list-inside text-blue-600 underline space-y-1">
-                {evidenceLinks.map((link, idx) => (
+              <ul className="list-disc list-inside space-y-1">
+                {evidenceLinks.map(({ title, link }, idx) => (
                   <li key={idx}>
-                    <a href={link} target="_blank" rel="noopener noreferrer">
-                      {link}
+                    <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                      {title}
                     </a>
                   </li>
                 ))}
