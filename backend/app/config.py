@@ -25,9 +25,9 @@ from typing_extensions import override
 from openai import AssistantEventHandler, OpenAI
 
 # For FastAPI
-from fastapi import FastAPI, UploadFile, File
+from fastapi import APIRouter, FastAPI, UploadFile, File, Form
 from fastapi.responses import JSONResponse
-from typing import List, Optional
+from typing import List, Optional, Dict
 from fastapi.middleware.cors import CORSMiddleware
 
 # For MongoDB
@@ -57,15 +57,26 @@ import concurrent.futures
 
 from dotenv import load_dotenv
 
+# For cheapfake detection
 from google import genai
 from google.genai import types
-import os
 from PIL import Image
+
+# For detecting deepfakes
+import whisper
+import cv2
+from moviepy.editor import VideoFileClip
+from pyannote.audio import Pipeline
+import yt_dlp
+from io import BytesIO
+import tempfile
+import shutil
 
 # Load file .env
 load_dotenv()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+HUGGINGFACE_TOKEN = os.getenv("HUGGINGFACE_TOKEN")
 MONGO_URI = os.getenv("MONGO_URI")
 client = OpenAI(
     api_key = OPENAI_API_KEY,

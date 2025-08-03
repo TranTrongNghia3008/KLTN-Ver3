@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { FiUpload, FiX, FiSearch, FiVideo } from "react-icons/fi";
+import { checkDeepfake } from "../services/deepfakeService";
 
 export default function Deepfake() {
   const [video, setVideo] = useState(null);
@@ -31,28 +32,54 @@ export default function Deepfake() {
     }
   };
 
-  const handleCheck = () => {
+  const handleCheck = async () => {
     if (!video) return;
     setLoading(true);
     setResults([]);
 
-    // Giả lập API
-    setTimeout(() => {
-      const fakeResults = [
-        { timestamp: "00:00–00:05", label: "REAL", start: 0, end: 5 },
-        { timestamp: "00:05–00:10", label: "FAKE", start: 5, end: 10 },
-        { timestamp: "00:10–00:15", label: "REAL", start: 10, end: 15 },
-      ];
-      setResults(fakeResults);
+    try {
+      const res = await checkDeepfake(video.file);
+
+      if (res?.statements) {
+        // Convert to {timestamp, label, start, end} dạng như kết quả cũ
+        const parsed = res.statements.map((s) => ({
+          timestamp: `${formatTime(s.start)}–${formatTime(s.end)}`,
+          label: s.deepfake_label,
+          start: s.start,
+          end: s.end,
+          text: s.text,
+          score: s.deepfake_score,
+        }));
+        setResults(parsed);
+      } else {
+        setResults([]);
+        alert("No statements found.");
+      }
+    } catch (err) {
+      console.error("Deepfake API error:", err);
+      alert("An error occurred while checking the video.");
+    } finally {
       setLoading(false);
-    }, 2000);
+    }
+  };
+
+  const formatTime = (sec) => {
+    const minutes = Math.floor(sec / 60)
+      .toString()
+      .padStart(2, "0");
+    const seconds = Math.floor(sec % 60)
+      .toString()
+      .padStart(2, "0");
+    return `${minutes}:${seconds}`;
   };
 
   return (
     <div className="p-6 w-full mx-auto h-[calc(100vh-100px)] flex flex-col">
       <h1 className="text-2xl font-bold mb-4">Deepfake Detection</h1>
       <p className="text-gray-600 mb-6">
-        Upload a video to analyze and detect deepfake segments. Each result is labeled as <strong>REAL</strong> or <strong>FAKE</strong> and includes a playable segment preview.
+        Upload a video to analyze and detect deepfake segments. Each result is
+        labeled as <strong>REAL</strong> or <strong>FAKE</strong> and includes a
+        playable segment preview.
       </p>
 
       <div className="flex flex-1 gap-6">
@@ -67,7 +94,9 @@ export default function Deepfake() {
             {!video ? (
               <div className="text-center">
                 <FiUpload size={48} className="text-gray-400 mx-auto mb-2" />
-                <p className="text-gray-500">Drag & drop a video or click to upload</p>
+                <p className="text-gray-500">
+                  Drag & drop a video or click to upload
+                </p>
                 <input
                   type="file"
                   accept="video/*"
@@ -96,7 +125,11 @@ export default function Deepfake() {
           {video && (
             <div className="mb-4">
               <p className="text-sm text-gray-500 mb-2">Preview:</p>
-              <video src={video.url} controls className="w-full rounded shadow" />
+              <video
+                src={video.url}
+                controls
+                className="w-full rounded shadow"
+              />
             </div>
           )}
 
@@ -115,50 +148,53 @@ export default function Deepfake() {
 
         {/* Right: Results */}
         <div className="w-full md:w-1/2 overflow-y-auto max-h-[calc(100vh-220px)] pr-1">
-            <h2 className="text-xl font-semibold mb-4">Detection Results:</h2>
-            {results.length > 0 ? (
+          <h2 className="text-xl font-semibold mb-4">Detection Results:</h2>
+          {results.length > 0 ? (
             <div className="grid grid-cols-1 gap-4">
-            {results.map((res, idx) => (
+              {results.map((res, idx) => (
                 <div
-                key={idx}
-                className={`border-l-4 p-4 rounded shadow bg-white ${
+                  key={idx}
+                  className={`border-l-4 p-4 rounded shadow bg-white ${
                     res.label === "FAKE" ? "border-red-500" : "border-green-500"
-                }`}
+                  }`}
                 >
-                <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm font-medium text-gray-700">Segment: {res.timestamp}</span>
-                    <span
-                    className={`px-2 py-0.5 text-xs rounded-full font-semibold ${
-                        res.label === "FAKE"
-                        ? "bg-red-500 text-white"
-                        : "bg-green-500 text-white"
-                    }`}
-                    >
-                    {res.label}
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-sm font-medium text-gray-700">
+                      Segment: {res.timestamp}
                     </span>
-                </div>
+                    <span
+                      className={`px-2 py-0.5 text-xs rounded-full font-semibold ${
+                        res.label === "FAKE"
+                          ? "bg-red-500 text-white"
+                          : "bg-green-500 text-white"
+                      }`}
+                    >
+                      {res.label}
+                    </span>
+                  </div>
 
-                <div className="relative">
+                  <div className="relative">
                     <video
-                    src={video.url}
-                    controls
-                    className="w-full rounded"
-                    onLoadedMetadata={(e) => {
+                      src={video.url}
+                      controls
+                      className="w-full rounded"
+                      onLoadedMetadata={(e) => {
                         e.currentTarget.currentTime = res.start;
-                    }}
+                      }}
                     />
                     <div className="absolute top-2 right-2 bg-white bg-opacity-80 text-xs px-2 py-0.5 rounded shadow flex items-center gap-1">
-                    <FiVideo size={14} />
-                    {res.timestamp}
+                      <FiVideo size={14} />
+                      {res.timestamp}
                     </div>
+                  </div>
                 </div>
-                </div>
-            ))}
+              ))}
             </div>
-            ) : (
-            <p className="text-gray-500">No results found. Please check the video.</p>
-            )}
-   
+          ) : (
+            <p className="text-gray-500">
+              No results found. Please check the video.
+            </p>
+          )}
         </div>
       </div>
     </div>

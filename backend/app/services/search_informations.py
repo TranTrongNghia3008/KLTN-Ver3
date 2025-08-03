@@ -47,7 +47,7 @@ def search_relevant_links(query: SearchQuery, topK: int, conversationsessionsID:
             driver.get(search_url)
             time.sleep(10 * retry_count) 
 
-            articles = driver.find_elements(By.CLASS_NAME, "b_algo")
+            articles = driver.find_elements(By.CSS_SELECTOR, "#b_results li.b_algo")
             if articles:
                 for article in articles[:min(topK, len(articles))]:
                     try:
