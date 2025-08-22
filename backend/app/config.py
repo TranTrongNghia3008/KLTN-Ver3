@@ -87,6 +87,6 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
 STORAGE_PATH = "./storage/pdf_files"
 
-MINIMUM_K = 1
+MINIMUM_K = 5
 
 client_gemini = genai.Client(api_key="AIzaSyATfpBIyIKcajRMxGy9-1tbNP5xwgLua3U")

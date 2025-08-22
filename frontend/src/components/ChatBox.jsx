@@ -23,13 +23,13 @@ export default function ChatBox({
   setEditedHistory
 }) {
   const [messages, setMessages] = useState([]);
-  const [topK, setTopK] = useState(1);
+  const [topK, setTopK] = useState(5);
   const [isThinking, setIsThinking] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       if (conversationId) await loadMessages();
-      setTopK(1);
+      setTopK(5);
     };
     fetchData();
   }, [conversationId]);

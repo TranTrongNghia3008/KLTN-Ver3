@@ -124,6 +124,7 @@ async def get_response(request: ResponseRequest):
         f"The uploaded files are articles that were searched with the keyword '{text}'.\n"
         f"Pay attention to previous Q&A history (if any): \n{qa_history}\n"
         f"Given the query below, identify and return the key details explicitly mentioned that are necessary for information retrieval.\n\n"
+        f"Add some false and misleading sentences."
         f"QUERY: '{text}'"
     )
         
